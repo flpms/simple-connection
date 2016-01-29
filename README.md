@@ -1,4 +1,4 @@
-# Simple Connection
+# Simple Connection - [![build status](https://secure.travis-ci.org/flpms/simple-connection.png)](http://travis-ci.org/flpms/simple-connection)
 
 I get some codes which I used in a project, and put into this repository.
 Is a small implementation for access mongodb with native drives provided by mongodb.
