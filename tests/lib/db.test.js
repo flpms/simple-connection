@@ -68,6 +68,8 @@ describe('Test Simple Connection mongo', function() {
             }).catch();
         });
 
+        it('Should return promise with error cause no data passed');
+
         it('Should return a promise with sucess when find data', function(done) {
             let result = tests.find({example: 1});
 
@@ -83,5 +85,10 @@ describe('Test Simple Connection mongo', function() {
                 done();
             }).catch();
         });
+
+        it('Should return sucess for update data');
+        it('Should return fail when update data');
+        it('Should return sucess for remove data');
+        it('Should return sucess when remove data');
     });
 });
