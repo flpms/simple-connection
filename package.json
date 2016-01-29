@@ -1,0 +1,34 @@
+{
+  "name": "simple-connection",
+  "version": "1.0.0",
+  "description": "Connection using mongo native which desire to be an simple alternative to another communicattions - ES6 read",
+  "main": "lib/db.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests/lib/db.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flpms/simple-connection.git"
+  },
+  "keywords": [
+    "mongo",
+    "node",
+    "es6"
+  ],
+  "author": "Filipe M. Silva",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flpms/simple-connection/issues"
+  },
+  "homepage": "https://github.com/flpms/simple-connection#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.4"
+  },
+  "dependencies": {
+    "mongo": "^0.1.0"
+  }
+}
