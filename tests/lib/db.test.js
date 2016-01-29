@@ -7,8 +7,8 @@ const chaiExpect = require('chai').expect;
 describe('Test Simple Connection mongo', function() {
 
     let db = DB({
-        "username": "",
-        "password": "#",
+        "username": "travis",
+        "password": "tests",
         "server": "localhost",
         "port": 27017,
         "database_name": "exampleTest"
