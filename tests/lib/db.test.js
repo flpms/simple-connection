@@ -75,7 +75,7 @@ describe('Test Simple Connection mongo', function() {
         it('Should return a promise with sucess when find data', function(done) {
             this.timeout(30000);
 
-            let result = tests.find({example: 1});
+            let result = tests.find({example: 2});
 
             result.then(function(success) {
 
