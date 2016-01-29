@@ -1,6 +1,6 @@
 {
   "name": "simple-connection",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Connection using mongo native which desire to be an simple alternative to another communicattions - ES6 read",
   "main": "lib/db.js",
   "directories": {
@@ -29,6 +29,6 @@
     "mocha": "^2.4.4"
   },
   "dependencies": {
-    "mongo": "^0.1.0"
+    "mongodb": "^2.1.4"
   }
 }
