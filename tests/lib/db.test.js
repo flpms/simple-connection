@@ -87,7 +87,9 @@ describe('Test Simple Connection mongo', function() {
                 chaiExpect(success[0].example).to.equal(1);
 
                 done();
-            }).catch();
+            }).catch(function (err){
+                console.log(err);
+            });
         });
 
         it('Should return sucess for update data');
