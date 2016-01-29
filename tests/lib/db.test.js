@@ -41,6 +41,8 @@ describe('Test Simple Connection mongo', function() {
         });
 
         it('Should return a promise with sucess when insert data', function(done) {
+            this.timeout(20000);
+
             let result = tests.insert({
                 teste: 'value 3',
                 example: 2
