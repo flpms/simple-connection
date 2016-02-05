@@ -18,7 +18,7 @@ describe('Test remove operations', function() {
     var context = { url: url, collectionName: 'collectionTest'};
 
     it('Should fail, if no data', function() {
-        var promise = crud.insert.call(context, '');
+        var promise = crud.remove.call(context, '');
 
         promise.then().catch(function(err) {
             assert.equal('Data not Found', err);
