@@ -31,10 +31,10 @@ var db = DB.config({
     console.log(err);
   })
 
+  db.remove({your: 'search'}, options).then((success) => {
+    console.log(success);
+  }).catch((err) => {
+    console.log(err);
+  })
+
 ````
-
-### Need more implementation
-
-* add a update
-* add a remove
-* use a findOne
