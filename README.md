@@ -3,7 +3,7 @@
 I get some codes which I used in a project, and put into this repository.
 Is a small implementation for access mongodb with native drives provided by mongodb.
 
-Is a ES 6 read.
+Is a ES 6 ready.
 
 ## Install
 
