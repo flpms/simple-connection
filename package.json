@@ -29,6 +29,6 @@
     "mocha": "^2.4.4"
   },
   "dependencies": {
-    "mongodb": "^2.1.4"
+    "mongodb": "^2.2.35"
   }
 }
