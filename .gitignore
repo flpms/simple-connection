@@ -212,9 +212,13 @@ pip-log.txt
 #Translations
 *.mo
 
-#Mr Developer
+# Mr Developer
 .mr.developer.cfg
 
 # Node
 node_modules/
 config/
+
+# for project
+
+test-index.js
