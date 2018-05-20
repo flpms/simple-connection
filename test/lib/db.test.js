@@ -2,6 +2,8 @@
 
 const assert = require('assert');
 const expect = require('chai').expect;
+const sinon = require('sinon');
+
 
 const DB = require('../../lib/db.js');
 
@@ -14,7 +16,13 @@ describe('Test simple connection mongo', function() {
 
   it('expect DB instance throw error without config', function () {
 
-    expect();
+    expect(db).to.throw();
 
   });
+
+  context('open', () => {
+
+  });
+
+
 });
