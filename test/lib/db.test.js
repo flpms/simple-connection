@@ -9,7 +9,7 @@ const DB = require('../../lib/db.js');
 const Connections = require('../../lib/connections');
 const Collections = require('../../lib/collections');
 
-describe('Test simple connection mongo', function() {
+describe('Unit test for DB', () => {
 
   const config = {
     "username": "travis",
