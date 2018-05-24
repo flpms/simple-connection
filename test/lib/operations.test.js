@@ -58,6 +58,18 @@ describe('Unit test for operations', () => {
     });
   });
 
+  context('checkForData()', () => {
+    it('expect return true after nothing send', () => {
+      const result = operations.checkForData();
+      expect(result).to.be.true;
+    });
+
+    it('expect return false after nothing send', () => {
+      const result = operations.checkForData({test: 'example'});
+      expect(result).to.be.false;
+    });
+  });
+
   context('insert()', () => {
     let sandbox,
         dbMockObject,
@@ -147,4 +159,81 @@ describe('Unit test for operations', () => {
     });
 
   });
+
+  context('find()', () => {
+    let sandbox,
+        toArrayMock,
+        collectionMock,
+        dbMockObject,
+        spyCreatePromise,
+        spyCheckForData,
+        spyRetriveCollection;
+
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+
+      toArrayMock = {
+        toArray: sinon.stub()
+      };
+
+      collectionMock = {
+        toArrayMock,
+        find: sinon.stub().returns(toArrayMock)
+      };
+
+      dbMockObject = {
+        close: sandbox.spy(),
+        collection: sandbox.stub().returns(collectionMock)
+      };
+
+      spyCreatePromise = sandbox.spy(operations, 'createPromise');
+      spyCheckForData = sandbox.spy(operations, 'checkForData');
+      spyRetriveCollection = sandbox.spy(operations, 'retriveCollection');
+
+
+      operations.connection = new Promise((resolve) => {
+        resolve(dbMockObject);
+      });
+    });
+
+    afterEach(() => sandbox.restore());
+
+    it('expect call createPromise', () => {
+      operations.find({ test: 'teste' });
+      expect(spyCreatePromise.called).to.be.true;
+    });
+
+
+    it('expect call checkForData', () => {
+      operations.find({ test: 'teste' });
+      expect(spyCheckForData.called).to.be.true;
+    });
+
+    it('expect call retriveCollection', (done) => {
+      toArrayMock.toArray.callsFake((cb) => {
+        cb(null, [{test: 'teste'}]);
+        // return { toArray: () => {} };
+      });
+
+      operations.find({ test: 'teste' }).then((result) => {
+        expect(spyRetriveCollection.called).to.be.true;
+        done();
+      });
+    });
+
+    it('expect close called after complete operations', (done) => {
+      toArrayMock.toArray.callsFake((cb) => {
+        cb(null, true);
+      });
+
+      operations.find({ test: 'teste' }).then((result) => {
+        expect(dbMockObject.close.called).to.be.true;
+        done();
+      });
+    });
+  });
+
+  context('remove()', () => {});
+
+  context('update()', () => {});
 });
