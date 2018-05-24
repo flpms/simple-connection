@@ -222,3 +222,8 @@ config/
 # for project
 
 test-index.js
+
+
+# ignore coverage
+
+.nyc_output/
