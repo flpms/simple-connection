@@ -12,17 +12,14 @@ describe('Unit test for operations', () => {
   let collectionName,
       mockConnection,
       operations,
-      connObject;
+      connObject,
+      promiseCatchHandler = () => {};
 
   beforeEach(() => {
     collectionName = 'collectionTest';
-    mockConnection = new Promise((resolve, reject) => {
-
-    });
+    mockConnection = new Promise((resolve, reject) => {});
     operations = new Operations(collectionName, mockConnection);
   });
-
-  // afterEach(() => operations.connection.restore());
 
   context('Operations()', () => {
     it('expect operations has connection and collectionName as property', () => {
@@ -65,8 +62,42 @@ describe('Unit test for operations', () => {
     });
 
     it('expect return false after nothing send', () => {
-      const result = operations.checkForData({test: 'example'});
+      const result = operations.checkForData({ test: 'example' });
       expect(result).to.be.false;
+    });
+  });
+
+  context('startOperations', () => {
+    it('expect return a promise when call startOperations', () => {
+      let result = operations.startOperations();
+      expect(typeof result).to.equal('object');
+    });
+  });
+
+  context('createOperationObject', () => {
+    let sandbox,
+        stubRetriveCollection,
+        dbMockObject,
+        result;
+
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+      stubRetriveCollection = sandbox.stub(operations, 'retriveCollection');
+
+      dbMockObject = {
+        obj: 'obj'
+      };
+
+      stubRetriveCollection.returns(dbMockObject);
+      result = operations.createOperationObject(dbMockObject);
+    });
+
+    it('expect call retriveCollection with db informed', () => {
+      expect(stubRetriveCollection.calledWith(dbMockObject)).to.be.true;
+    });
+
+    it('expect get object with collection properties and informed db', () => {
+      expect(result).to.be.a('object');
     });
   });
 
@@ -75,7 +106,7 @@ describe('Unit test for operations', () => {
         dbMockObject,
         spyCreatePromise,
         spyCheckForData,
-        spyRetriveCollection,
+        spyStartOperations,
         collectionMock;
 
     beforeEach(() => {
@@ -93,13 +124,13 @@ describe('Unit test for operations', () => {
 
       spyCreatePromise = sandbox.spy(operations, 'createPromise');
       spyCheckForData = sandbox.spy(operations, 'checkForData');
-      spyRetriveCollection = sandbox.spy(operations, 'retriveCollection');
+      spyStartOperations = sandbox.spy(operations, 'startOperations');
 
       operations.connection = new Promise((resolve) => {
         resolve(dbMockObject);
       });
 
-      operations.insert({ test: 'teste' });
+      operations.insert({ test: 'teste' }).catch();
     });
 
     afterEach(() => sandbox.restore());
@@ -114,15 +145,17 @@ describe('Unit test for operations', () => {
       expect(spyCheckForData.called).to.be.true;
     });
 
-    it('expect call retriveCollection', (done) => {
-      collectionMock.insert.callsFake((arg1, arg2, cb) => {
-        cb(null, true);
-      });
-
-      operations.insert({ test: 'teste' }).then((result) => {
-        expect(spyRetriveCollection.called).to.be.true;
+    it('expect call checkForData and get a rejection with proper message', (done) => {
+      operations.insert().catch((err) => {
+        expect(spyCheckForData.called).to.be.true;
+        expect(err).to.equal('No data to insert');
         done();
       });
+    });
+
+    it('expect call startOperations', () => {
+      operations.insert({ test: 'teste' });
+      expect(spyStartOperations.called).to.be.true;
     });
 
     it('expect close called after complete operations', (done) => {
@@ -167,7 +200,7 @@ describe('Unit test for operations', () => {
         dbMockObject,
         spyCreatePromise,
         spyCheckForData,
-        spyRetriveCollection;
+        spyStartOperations;
 
     beforeEach(() => {
       sandbox = sinon.createSandbox();
@@ -188,8 +221,7 @@ describe('Unit test for operations', () => {
 
       spyCreatePromise = sandbox.spy(operations, 'createPromise');
       spyCheckForData = sandbox.spy(operations, 'checkForData');
-      spyRetriveCollection = sandbox.spy(operations, 'retriveCollection');
-
+      spyStartOperations = sandbox.spy(operations, 'startOperations');
 
       operations.connection = new Promise((resolve) => {
         resolve(dbMockObject);
@@ -203,22 +235,22 @@ describe('Unit test for operations', () => {
       expect(spyCreatePromise.called).to.be.true;
     });
 
-
     it('expect call checkForData', () => {
       operations.find({ test: 'teste' });
       expect(spyCheckForData.called).to.be.true;
     });
 
-    it('expect call retriveCollection', (done) => {
-      toArrayMock.toArray.callsFake((cb) => {
-        cb(null, [{test: 'teste'}]);
-        // return { toArray: () => {} };
-      });
-
-      operations.find({ test: 'teste' }).then((result) => {
-        expect(spyRetriveCollection.called).to.be.true;
+    it('expect call checkForData and get a rejection with proper message', (done) => {
+      operations.find().catch((err) => {
+        expect(spyCheckForData.called).to.be.true;
+        expect(err).to.equal('No data to find');
         done();
       });
+    });
+
+    it('expect call startOperations', () => {
+      operations.find({ test: 'teste' });
+      expect(spyStartOperations.called).to.be.true;
     });
 
     it('expect close called after complete operations', (done) => {
@@ -233,7 +265,136 @@ describe('Unit test for operations', () => {
     });
   });
 
-  context('remove()', () => {});
+  context('remove()', () => {
+    let sandbox,
+        toArrayMock,
+        collectionMock,
+        dbMockObject,
+        spyCreatePromise,
+        spyCheckForData,
+        spyStartOperations;
 
-  context('update()', () => {});
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+
+      collectionMock = {
+        remove: sinon.stub()
+      };
+
+      dbMockObject = {
+        close: sandbox.spy(),
+        collection: sandbox.stub().returns(collectionMock)
+      };
+
+      spyCreatePromise = sandbox.spy(operations, 'createPromise');
+      spyCheckForData = sandbox.spy(operations, 'checkForData');
+      spyStartOperations = sandbox.spy(operations, 'startOperations');
+
+      operations.connection = new Promise((resolve) => {
+        resolve(dbMockObject);
+      });
+    });
+
+    afterEach(() => sandbox.restore());
+
+    it('expect call createPromise', () => {
+      operations.remove({ test: 'teste' }, { test: 'test2'});
+      expect(spyCreatePromise.called).to.be.true;
+    });
+
+    it('expect call checkForData', () => {
+      operations.remove({ test: 'teste' });
+      expect(spyCheckForData.called).to.be.true;
+    });
+
+    it('expect call checkForData and get a rejection with proper message', (done) => {
+      operations.remove().catch((err) => {
+        expect(spyCheckForData.called).to.be.true;
+        expect(err).to.equal('No data to remove');
+        done();
+      });
+    });
+
+    it('expect call startOperations', () => {
+      operations.remove({ test: 'teste' });
+      expect(spyStartOperations.called).to.be.true;
+    });
+  });
+
+  context('update()', () => {
+    let sandbox,
+        dbMockObject,
+        spyCreatePromise,
+        spyCheckForData,
+        spyStartOperations,
+        collectionMock;
+
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+
+      collectionMock = {
+        update: sinon.stub()
+      };
+
+      dbMockObject = {
+        close: sandbox.spy(),
+        collection: sandbox.stub().returns(collectionMock)
+      };
+
+      spyCreatePromise = sandbox.spy(operations, 'createPromise');
+      spyCheckForData = sandbox.spy(operations, 'checkForData');
+      spyStartOperations = sandbox.spy(operations, 'startOperations');
+
+      operations.connection = new Promise(resolve => resolve(dbMockObject));
+
+    });
+
+    afterEach(() => sandbox.restore());
+
+    it('expect call createPromise', () => {
+      operations.update({ test: 'teste' }, { test: 'test2'}).catch(promiseCatchHandler);
+      expect(spyCreatePromise.called).to.be.true;
+    });
+
+    it('expect checkForData be called', () => {
+      operations.update({ test: 'teste' }, { test: 'test2'}).catch(promiseCatchHandler);
+      expect(spyCheckForData.called).to.be.true;
+    });
+
+    it('expect call startOperations\n', () => {
+      operations.update({ test: 'teste' }, { test: 'test2'}).catch(promiseCatchHandler);
+      expect(spyStartOperations.called).to.be.true;
+    });
+
+    it(`expect call checkForData without query param and
+                                get a rejection with proper message\n`, (done) => {
+
+      operations.update(undefined, { test: 'test2'}).catch((err) => {
+
+        expect(err).to.equal('No query to looking for');
+        done();
+      });
+    });
+
+    it(`expect call checkForData without update param and
+                                get a rejection with proper message\n`, (done) => {
+
+      operations.update({ test: 'test2'}).catch((err) => {
+        expect(err).to.equal('No data to update');
+        done();
+      });
+    });
+
+
+
+    it('expect close called after complete operations', (done) => {
+      collectionMock.update.callsFake((query, update, options, cb) => cb(false, true));
+
+      operations.update({ test: 'teste' }, { test: 'test2'}).then((result) => {
+        expect(dbMockObject.close.called).to.be.true;
+        done();
+      }).catch(err => console.log('= 396 =', err));
+    });
+
+  });
 });
