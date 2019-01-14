@@ -223,7 +223,8 @@ config/
 
 test-index.js
 
-
 # ignore coverage
 
 .nyc_output/
+
+coverage/
