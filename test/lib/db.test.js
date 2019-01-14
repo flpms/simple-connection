@@ -19,23 +19,24 @@ describe('Unit test for DB', () => {
     "database_name": "exampleTest"
   };
 
+  const sandbox = sinon.createSandbox();
+
   let db,
-      sandbox,
       stubCreateConnection,
-      stubCollectionsConstructor;
+      spyCollectionsConstructor;
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox();
-
     stubCreateConnection = sandbox.stub(Connections.prototype, 'createConnection');
-    stubCollectionsConstructor = sandbox.spy(Collections.constructor);
-
-    db = new DB(config);
+    spyCollectionsConstructor = sandbox.spy(Collections.constructor);
   });
 
   afterEach(() => sandbox.restore());
 
   context('DB()', () => {
+
+    afterEach(() => {
+      db = null;
+    });
 
     it('expect throw a error after invalid config', () => {
       try {
@@ -50,6 +51,7 @@ describe('Unit test for DB', () => {
     });
 
     it('expect db instantion has property url and config', () => {
+      db = new DB(config);
       expect(db).to.have.property('url')
       expect(db).to.have.property('config');
 
@@ -59,12 +61,33 @@ describe('Unit test for DB', () => {
       expect(db.url).to.be.equal('mongodb://travis:tests@localhost:27017/exampleTest');
       expect(db.config).to.be.equal(config);
     });
+
+    it('expect db url has user only', () => {
+      let configClone = { ...config };
+      delete configClone.password;
+
+      db = new DB(configClone);
+
+      expect(db.url).to.be.equal('mongodb://travis@localhost:27017/exampleTest');
+    });
+
+    it('expect db url has no user and password', () => {
+
+      let configClone = { ...config };
+      delete configClone.username;
+      delete configClone.password;
+
+      db = new DB(configClone);
+
+      expect(db.url).to.be.equal('mongodb://localhost:27017/exampleTest');
+    });
   });
 
   context('open()', () => {
     let result;
 
     beforeEach(() => {
+      db = new DB(config);
       result = db.open('example');
     });
 
@@ -93,6 +116,10 @@ describe('Unit test for DB', () => {
 
   context('get validConfig()', () => {
 
+    beforeEach(() => {
+      db = new DB(config);
+    });
+
     afterEach(() => {
       config.port = 27017;
       config.database_name = 'exampleTest';
@@ -105,17 +132,17 @@ describe('Unit test for DB', () => {
     });
 
     it('expect validConfig be false when don\'t have a property server in config', () => {
-      delete db.config['server'];
+      delete db.config.server;
       expect(db.validConfig).to.be.undefined;
     });
 
     it('expect validConfig be false when don\'t have a property port in config', () => {
-      delete db.config['port'];
+      delete db.config.port;
       expect(db.validConfig).to.be.undefined;
     });
 
     it('expect validConfig be false when don\'t have a property database_name in config', () => {
-      delete db.config['database_name'];
+      delete db.config.database_name;
       expect(db.validConfig).to.be.undefined;
     });
   });
