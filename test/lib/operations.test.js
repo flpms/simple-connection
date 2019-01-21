@@ -180,6 +180,17 @@ describe('Unit test for operations', () => {
       });
     });
 
+    it('expect rejection flow be called with proper error on call insert', (done) => {
+      collectionMock.insert.callsFake((arg1, arg2, cb) => cb('error'));
+
+      operations.insert({ test: 'teste' }).catch((result) => {
+        expect(result).to.be.a('string');
+        expect(result).to.equal('error');
+
+        done();
+      });
+    });
+
     it('expect call insertMany for array data', (done) => {
       collectionMock.insertMany.callsFake((arg1, arg2, cb) => {
         cb(null, true);
@@ -191,6 +202,16 @@ describe('Unit test for operations', () => {
       });
     });
 
+    it('expect rejection flow be called with proper error on call insertMany', (done) => {
+      collectionMock.insertMany.callsFake((arg1, arg2, cb) => cb('error'));
+
+      operations.insert([{ test: 'teste' }]).catch((result) => {
+        expect(result).to.be.a('string');
+        expect(result).to.equal('error');
+
+        done();
+      });
+    });
   });
 
   context('find()', () => {
@@ -263,6 +284,19 @@ describe('Unit test for operations', () => {
         done();
       });
     });
+
+    it('expect rejection flow be called with proper error', (done) => {
+      toArrayMock.toArray.callsFake((cb) => {
+        cb('error', true);
+      });
+
+      operations.find({ test: 'teste' }).catch((result) => {
+        expect(result).to.be.a('string');
+        expect(result).to.equal('error');
+
+        done();
+      });
+    });
   });
 
   context('remove()', () => {
@@ -318,6 +352,26 @@ describe('Unit test for operations', () => {
     it('expect call startOperations', () => {
       operations.remove({ test: 'teste' });
       expect(spyStartOperations.called).to.be.true;
+    });
+
+    it('expect close called after complete operations', (done) => {
+      collectionMock.remove.callsFake((query, options, cb) => cb(false, true));
+
+      operations.remove({ test: 'teste' }).then((result) => {
+        expect(dbMockObject.close.called).to.be.true;
+        done();
+      });
+    });
+
+    it('expect rejection flow be called with proper error on call remove', (done) => {
+      collectionMock.remove.callsFake((arg1, arg2, cb) => cb('error'));
+
+      operations.remove({ test: 'teste' }).catch((result) => {
+        expect(result).to.be.a('string');
+        expect(result).to.equal('error');
+
+        done();
+      });
     });
   });
 
@@ -385,16 +439,24 @@ describe('Unit test for operations', () => {
       });
     });
 
-
-
     it('expect close called after complete operations', (done) => {
       collectionMock.update.callsFake((query, update, options, cb) => cb(false, true));
 
       operations.update({ test: 'teste' }, { test: 'test2'}).then((result) => {
         expect(dbMockObject.close.called).to.be.true;
         done();
-      }).catch(err => console.log('= 396 =', err));
+      });
     });
 
+    it('expect rejection flow be called with proper error on call remove', (done) => {
+      collectionMock.update.callsFake((query, update, options, cb) => cb('error'));
+
+      operations.update({ test: 'teste' }, { test: 'test2'}).catch((result) => {
+        expect(result).to.be.a('string');
+        expect(result).to.equal('error');
+
+        done();
+      });
+    });
   });
 });

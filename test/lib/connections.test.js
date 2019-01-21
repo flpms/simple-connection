@@ -45,6 +45,28 @@ describe('Unit test for Connections', () => {
       expect(connections).to.have.property('_connection');
       expect(typeof connections._connection).to.be.equal('object');
     });
+
+    it('expect connection resolve with sucess', (done) => {
+      stubMongoClientConn.callsFake((arg1, cb) => cb(null, true));
+
+      connections.createConnection();
+
+      connections._connection.then((result) => {
+        expect(result).to.equal(true);
+        done();
+      });
+    });
+
+    it('expect connection resolve with failure', (done) => {
+      stubMongoClientConn.callsFake((arg1, cb) => cb(true ));
+
+      connections.createConnection();
+
+      connections._connection.catch((result) => {
+        expect(result).to.equal(true);
+        done();
+      });
+    });
   });
 
   context('get connection()', () => {
