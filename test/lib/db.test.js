@@ -1,207 +1,149 @@
 'use strict';
 
 const assert = require('assert');
+const expect = require('chai').expect;
+const sinon = require('sinon');
+
 const DB = require('../../lib/db.js');
-const chaiExpect = require('chai').expect;
 
-describe('Test simple connection mongo', function() {
+const Connections = require('../../lib/connections');
+const Collections = require('../../lib/collections');
 
-    let db = DB({
-        "username": "travis",
-        "password": "tests",
-        "server": "localhost",
-        "port": 27017,
-        "database_name": "exampleTest"
+describe('Unit test for DB', () => {
+
+  const config = {
+    "username": "travis",
+    "password": "tests",
+    "server": "localhost",
+    "port": 27017,
+    "database_name": "exampleTest"
+  };
+
+  const sandbox = sinon.createSandbox();
+
+  let db,
+      stubCreateConnection,
+      spyCollectionsConstructor;
+
+  beforeEach(() => {
+    stubCreateConnection = sandbox.stub(Connections.prototype, 'createConnection');
+    spyCollectionsConstructor = sandbox.spy(Collections.constructor);
+  });
+
+  afterEach(() => sandbox.restore());
+
+  context('DB()', () => {
+
+    afterEach(() => {
+      db = null;
     });
 
-    it ('Should read config', function() {
-        assert.equal(typeof db, 'object');
-        chaiExpect(db).to.have.property('collection');
+    it('expect throw a error after invalid config', () => {
+      try {
+        expect(new DB()).to.throw(/connection configuration not defined/gi);
+      } catch(e) {}
     });
 
-    describe('Should read a collection', function() {
-        let tests = db.collection('tests');
-
-        it ('Should init collection', function() {
-            assert.equal(typeof tests, 'object');
-            chaiExpect(tests).to.have.property('find');
-            chaiExpect(tests).to.have.property('insert');
-            chaiExpect(tests).to.have.property('update');
-            chaiExpect(tests).to.have.property('remove');
-        });
+    it('expect throw a error after invalid config', () => {
+      try {
+        expect(new DB({})).to.throw(/invalid connection configuration json/gi);
+      } catch(e) {}
     });
 
-    let carsCollection = db.collection('cars');
+    it('expect db instantion has property url and config', () => {
+      db = new DB(config);
+      expect(db).to.have.property('url')
+      expect(db).to.have.property('config');
 
-    before('Clear database', function() {
-        carsCollection.remove({}).catch(function(err) {
-            done(err);
-        })
+      expect(db.url).to.be.a('string');
+      expect(db.config).to.be.a('object');
+
+      expect(db.url).to.be.equal('mongodb://travis:tests@localhost:27017/exampleTest');
+      expect(db.config).to.be.equal(config);
     });
 
-    describe('Testing inserts operations', function() {
-        it('fail when insert cause no data for new colletion', function(done) {
-            carsCollection.insert().catch(function(err) {
-                assert.equal(err, 'Data not found');
-                done();
-            });
-        });
+    it('expect db url has user only', () => {
+      let configClone = Object.assign({}, config);
+      delete configClone.password;
 
-        it('insert 3 itens in a new colletion using InsertMany', function(done) {
+      db = new DB(configClone);
 
-            let carsList = [{
-                    name: 'Corolla',
-                    year: '2015',
-                    company: 'Toyota'
-                },
-                {
-                    name: 'X1',
-                    year: '2015',
-                    company: 'BMW'
-                },
-                {
-                    name: 'Onix',
-                    year: '2015',
-                    company: 'Chevrolet'
-                }];
-
-            carsCollection.insert(carsList).then(function(sucess) {
-
-                assert.equal(typeof sucess, 'object');
-                chaiExpect(sucess).to.have.property('result');
-                chaiExpect(sucess).to.have.property('ops');
-                chaiExpect(sucess).to.have.property('insertedCount');
-                chaiExpect(sucess).to.have.property('insertedIds');
-
-                chaiExpect(sucess.result.n).to.equal(3);
-                chaiExpect(sucess.ops).to.have.length(3);
-                chaiExpect(sucess.insertedCount).to.equal(3);
-
-                done();
-            });
-        });
-
-        it('insert a item in a car colletion using Insert', function(done) {
-
-            let car = {
-                    name: 'Civic',
-                    year: '2015',
-                    company: 'Honda'
-                };
-
-            carsCollection.insert(car).then(function(sucess) {
-
-                assert.equal(typeof sucess, 'object');
-                chaiExpect(sucess).to.have.property('result');
-                chaiExpect(sucess).to.have.property('ops');
-                chaiExpect(sucess).to.have.property('insertedCount');
-                chaiExpect(sucess).to.have.property('insertedIds');
-
-                chaiExpect(sucess.result.n).to.equal(1);
-                chaiExpect(sucess.ops).to.have.length(1);
-                chaiExpect(sucess.insertedCount).to.equal(1);
-
-                done();
-            });
-        });
+      expect(db.url).to.be.equal('mongodb://travis@localhost:27017/exampleTest');
     });
 
-    describe('Testing find operations', function() {
-        it('return entire collections when do a search with no data for new colletion', function(done) {
-            carsCollection.find().then(function(sucess) {
-                chaiExpect(sucess).to.be.a('array');
-                chaiExpect(sucess).to.be.a('array');
-                done();
-            });
-        });
+    it('expect db url has no user and password', () => {
 
-        it('return entire BMW when do a search with data', function(done) {
-            carsCollection.find({name: 'X1', company: 'BMW'}).then(function(sucess) {
+      let configClone = Object.assign({}, config);
+      delete configClone.username;
+      delete configClone.password;
 
-                chaiExpect(sucess.length).to.not.equal(0);
-                chaiExpect(sucess[0]).to.have.property('_id');
-                chaiExpect(sucess[0]).to.have.property('name');
-                chaiExpect(sucess[0]).to.have.property('year');
-                chaiExpect(sucess[0]).to.have.property('company');
+      db = new DB(configClone);
 
-                chaiExpect(sucess[0].company).to.equal('BMW');
-                chaiExpect(sucess[0].year).to.equal('2015');
-                chaiExpect(sucess[0].name).to.equal('X1');
+      expect(db.url).to.be.equal('mongodb://localhost:27017/exampleTest');
+    });
+  });
 
-                done();
-            });
-        });
+  context('open()', () => {
+    let result;
+
+    beforeEach(() => {
+      db = new DB(config);
+      result = db.open('example');
     });
 
-    describe('Testing update operations', function() {
-        it('fail cause no data passed', function(done) {
-            carsCollection.update().catch(function(err) {
-
-                assert.equal(err, 'Data not found');
-                done();
-            });
-        });
-
-        it('update all civic cars year from Civic', function(done) {
-            carsCollection.update({name: 'Civic'}, {name: 'Civic', year: 2012, company: 'Honda'}).then(function(sucess) {
-
-                chaiExpect(sucess).to.have.property('result');
-                chaiExpect(sucess.result).to.have.property('ok');
-                chaiExpect(sucess.result).to.have.property('nModified');
-                chaiExpect(sucess.result).to.have.property('n');
-                chaiExpect(sucess.result.nModified).to.not.equal(0);
-
-                done();
-            });
-        });
-
-        it('update year for Toyota', function(done) {
-            carsCollection.update({company: 'Toyota'}, {$set : { year: 2014 }}).then(function(sucess) {
-
-                chaiExpect(sucess).to.have.property('result');
-                chaiExpect(sucess.result).to.have.property('ok');
-                chaiExpect(sucess.result).to.have.property('nModified');
-                chaiExpect(sucess.result).to.have.property('n');
-                chaiExpect(sucess.result.nModified).to.not.equal(0);
-
-                done();
-            });
-        });
+    it('expect open be a function', () => {
+      expect(db.open).to.be.a('function');
     });
 
-    describe('Testing remove operations', function() {
-        it('No remove cause no data to query', function(done) {
-            carsCollection.remove().catch(function(err) {
-                assert.equal(err, 'Data not found');
-                done();
-            });
-        });
-
-        it('remove onix cars', function(done) {
-            carsCollection.remove({name: "Onix"}).then(function(sucess) {
-                chaiExpect(sucess).to.have.property('result');
-                chaiExpect(sucess.result).to.have.property('ok');
-                chaiExpect(sucess.result).to.have.property('n');
-                chaiExpect(sucess.result.n).to.not.equal(0);
-
-                done();
-            }).catch(function(err) {
-                done();
-            });
-        });
-
-        it('Clear DB', function(done) {
-            carsCollection.remove({}).then(function(sucess) {
-
-                chaiExpect(sucess).to.have.property('result');
-                chaiExpect(sucess.result).to.have.property('ok');
-                chaiExpect(sucess.result).to.have.property('n');
-                chaiExpect(sucess.result.n).to.not.equal(0);
-
-                done();
-            }).catch(function(err) {
-                done();
-            });
-        });
+    it('expect createConnection be called after open call', () => {
+      expect(stubCreateConnection.called).to.be.true;
     });
+
+    it('expect result on call open are a object with operations properties', () => {
+      expect(result).to.be.a('object');
+
+      expect(result).to.have.property('find');
+      expect(result).to.have.property('remove');
+      expect(result).to.have.property('insert');
+      expect(result).to.have.property('update');
+
+      expect(result.find).to.be.a('function');
+      expect(result.remove).to.be.a('function');
+      expect(result.insert).to.be.a('function');
+      expect(result.update).to.be.a('function');
+    });
+  });
+
+  context('get validConfig()', () => {
+
+    beforeEach(() => {
+      db = new DB(config);
+    });
+
+    afterEach(() => {
+      config.port = 27017;
+      config.database_name = 'exampleTest';
+      config.server = 'localhost';
+    });
+
+    it('expect call validConfig are true', () => {
+      const result = db.validConfig;
+      expect(result).to.be.true;
+    });
+
+    it('expect validConfig be false when don\'t have a property server in config', () => {
+      delete db.config.server;
+      expect(db.validConfig).to.be.undefined;
+    });
+
+    it('expect validConfig be false when don\'t have a property port in config', () => {
+      delete db.config.port;
+      expect(db.validConfig).to.be.undefined;
+    });
+
+    it('expect validConfig be false when don\'t have a property database_name in config', () => {
+      delete db.config.database_name;
+      expect(db.validConfig).to.be.undefined;
+    });
+  });
 });

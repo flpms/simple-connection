@@ -212,12 +212,19 @@ pip-log.txt
 #Translations
 *.mo
 
-#Mr Developer
+# Mr Developer
 .mr.developer.cfg
 
 # Node
 node_modules/
 config/
-coverage/
-.nyc_output/
+
+# for project
+
 test-index.js
+
+# ignore coverage
+
+.nyc_output/
+
+coverage/
