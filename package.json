@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha ./test/lib/**.test.js"
+    "test": "mocha ./test/lib/**.test.js",
+    "integration-test": "mocha ./test/integration.test.js"
   },
   "repository": {
     "type": "git",
