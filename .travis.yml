@@ -12,11 +12,11 @@ env:
   global:
     - CC_TEST_REPORTER_ID=18b4941291c81f7002e4ec5d7d38c9b3e31cf89f2393165e6bcf647c4a15b062
     - MONGO_USER="travis"
-    - MONGO_PASS="tests"
+    - MONGO_PASS="test"
 services:
-  - mongo mydb_test --eval 'db.createUser({user: "travis", "pwd": "tests", roles:["readWrite"]});'
-  - sleep 15
   - mongodb
+  - sleep 15
+  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 addons:
   apt:
     sources:
