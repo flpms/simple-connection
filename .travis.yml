@@ -11,10 +11,9 @@ node_js:
 env:
   global:
     - CC_TEST_REPORTER_ID=18b4941291c81f7002e4ec5d7d38c9b3e31cf89f2393165e6bcf647c4a15b062
-    - MONGO_USER="travis"t
+    - MONGO_USER="travis"
     - MONGO_PASS="tests"
 services:
-  - mongo mydb_test --eval 'db.addUser("travis", "tests");'
   - sleep 15
   - mongodb
 addons:
@@ -24,11 +23,12 @@ addons:
     packages:
     - mongodb-org-server
 before_script:
+  - mongo mydb_test --eval 'db.addUser("travis", "tests");'
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - npm run test-coverage
+  - npm test
   - npm run test-integration
 after_script:
   - ./cc-test-reporter after-build -t lcov --debug --exit-code $TRAVIS_TEST_RESULT
