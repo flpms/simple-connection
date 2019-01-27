@@ -11,8 +11,6 @@ describe('Test integration with mongo db', () => {
   let db, collection;
 
   const CONFIG = {
-    "username": process.env.MONGO_USER || 'root',
-    "password": process.env.MONGO_PASS || '',
     "server": "localhost",
     "port": 27017,
     "database_name": "mydb_test"
