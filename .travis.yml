@@ -1,5 +1,7 @@
 language: node_js
 node_js:
+  - "4.0"
+  - "6.0"
   - "8.0"
   - "8.15"
   - "9.0"
@@ -12,7 +14,7 @@ env:
     - MONGO_USER=travis
     - MONGO_PASS=test
 services:
-  - mongo mydb_test --eval 'db.addUser("travis", "test");'
+  - mongo mydb_test --eval 'db.addUser("travis", "tests");'
   - sleep 15
   - mongodb
 addons:
@@ -29,4 +31,4 @@ script:
   - npm test
   - npm run test-integration
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter after-build -t lcov --debug --exit-code $TRAVIS_TEST_RESULT
