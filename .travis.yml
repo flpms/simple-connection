@@ -28,6 +28,8 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
+  - node --eval "console.log(process.env.MONGO_USER)"
+  - node --eval "console.log(process.env.MONGO_PASS)"
   - npm test
   - npm run test-integration
 after_script:
