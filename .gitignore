@@ -220,3 +220,4 @@ node_modules/
 config/
 coverage/
 .nyc_output/
+test-index.js
