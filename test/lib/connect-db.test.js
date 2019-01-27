@@ -11,9 +11,8 @@ var chaiShould = chai.should();
         var conn = connection();
 
         conn.then().catch(function(e) {
-
             assert.equal('object', typeof e);
-            assert.equal(e.message, 'Parameter \'url\' must be a string, not undefined');
+            assert.equal(e.message, 'Parameter \"url\" must be a string, not undefined');
 
             done();
         });
