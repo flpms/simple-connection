@@ -19,6 +19,8 @@ describe('Test integration with mongo db', () => {
   };
 
   beforeEach(() => {
+    console.info('test using config', CONFIG);
+
     db = new DB(CONFIG);
     collection = db.open('exampleCollection');
   });
