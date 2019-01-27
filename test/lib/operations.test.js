@@ -126,11 +126,7 @@ describe('Unit test for operations', () => {
       spyCheckForData = sandbox.spy(operations, 'checkForData');
       spyStartOperations = sandbox.spy(operations, 'startOperations');
 
-      operations.connection = new Promise((resolve) => {
-        resolve(dbMockObject);
-      });
-
-      operations.insert({ test: 'teste' }).catch();
+      operations.connection = new Promise(resolve => resolve(dbMockObject));
     });
 
     afterEach(() => sandbox.restore());
@@ -159,9 +155,7 @@ describe('Unit test for operations', () => {
     });
 
     it('expect close called after complete operations', (done) => {
-      collectionMock.insert.callsFake((arg1, arg2, cb) => {
-        cb(null, true);
-      });
+      collectionMock.insert.callsFake((arg1, arg2, cb) => cb(null, true));
 
       operations.insert({ test: 'teste' }).then((result) => {
         expect(dbMockObject.close.called).to.be.true;
@@ -192,9 +186,7 @@ describe('Unit test for operations', () => {
     });
 
     it('expect call insertMany for array data', (done) => {
-      collectionMock.insertMany.callsFake((arg1, arg2, cb) => {
-        cb(null, true);
-      });
+      collectionMock.insertMany.callsFake((arg1, arg2, cb) => cb(null, true));
 
       operations.insert([{ test: 'teste' }]).then((result) => {
         expect(collectionMock.insertMany.called).to.be.true;
@@ -244,9 +236,7 @@ describe('Unit test for operations', () => {
       spyCheckForData = sandbox.spy(operations, 'checkForData');
       spyStartOperations = sandbox.spy(operations, 'startOperations');
 
-      operations.connection = new Promise((resolve) => {
-        resolve(dbMockObject);
-      });
+      operations.connection = new Promise(resolve => resolve(dbMockObject));
     });
 
     afterEach(() => sandbox.restore());
@@ -274,10 +264,31 @@ describe('Unit test for operations', () => {
       expect(spyStartOperations.called).to.be.true;
     });
 
-    it('expect close called after complete operations', (done) => {
-      toArrayMock.toArray.callsFake((cb) => {
-        cb(null, true);
+    it('expect call collection find with empty string in projection argument', (done) => {
+      collectionMock.find.callsFake((data, projection) => {
+        expect(projection).to.equal('');
+        done();
+        return toArrayMock;
       });
+
+      operations.find({ test: 'teste' }, '');
+    });
+
+    it('expect call collection find with projection argument', (done) => {
+      let _projectionMock = { $elemMatch: {} };
+
+      collectionMock.find.callsFake((data, projection) => {
+        expect(projection).to.be.a('object');
+        expect(projection).to.be.equal(_projectionMock);
+        done();
+        return toArrayMock;
+      });
+
+      operations.find({ test: 'teste' }, _projectionMock);
+    });
+
+    it('expect close called after complete operations', (done) => {
+      toArrayMock.toArray.callsFake(cb => cb(null, true));
 
       operations.find({ test: 'teste' }).then((result) => {
         expect(dbMockObject.close.called).to.be.true;
@@ -286,9 +297,7 @@ describe('Unit test for operations', () => {
     });
 
     it('expect rejection flow be called with proper error', (done) => {
-      toArrayMock.toArray.callsFake((cb) => {
-        cb('error', true);
-      });
+      toArrayMock.toArray.callsFake(cb => cb('error', true));
 
       operations.find({ test: 'teste' }).catch((result) => {
         expect(result).to.be.a('string');
@@ -324,9 +333,7 @@ describe('Unit test for operations', () => {
       spyCheckForData = sandbox.spy(operations, 'checkForData');
       spyStartOperations = sandbox.spy(operations, 'startOperations');
 
-      operations.connection = new Promise((resolve) => {
-        resolve(dbMockObject);
-      });
+      operations.connection = new Promise(resolve => resolve(dbMockObject));
     });
 
     afterEach(() => sandbox.restore());
