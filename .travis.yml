@@ -14,6 +14,7 @@ env:
     - MONGO_USER="travis"
     - MONGO_PASS="tests"
 services:
+  - mongo mydb_test --eval 'db.createUser({user: "travis", "pwd": "tests", roles:["readWrite"]});'
   - sleep 15
   - mongodb
 addons:
@@ -23,7 +24,6 @@ addons:
     packages:
     - mongodb-org-server
 before_script:
-  - mongo mydb_test --eval 'db.addUser("travis", "tests");'
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
