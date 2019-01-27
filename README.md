@@ -6,6 +6,11 @@ A small implementation to use mongodb with native drives provided by mongodb, bu
 
 `npm install simple-connection --save`
 
+
+## About config object
+
+Configurantion object the you can build connection url the keys username and password are optional. Also you can send a `query_params` key to build connection url with more mongo parameters. In example you can found how to send configuration object and how to create instantion to use with simple-connection.
+
 ## Example
 
 ```` javascript
@@ -29,6 +34,14 @@ A small implementation to use mongodb with native drives provided by mongodb, bu
   }).catch((err) => {
     console.log(err);
   });
+
+  // Or if your prefer async/await
+  try {
+    const result = await collection.insert({ data: 'to insert' });
+    console.log(result);
+  } catch(error)
+    console.log(err);
+  };
 
   collection.find({ data: 'to search' }).then((success) => {
     console.log(success);
