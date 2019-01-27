@@ -6,6 +6,11 @@ node_js:
   - "10.0"
   - "10.15"
   - "11.0"
+env:
+  global:
+    - CC_TEST_REPORTER_ID=18b4941291c81f7002e4ec5d7d38c9b3e31cf89f2393165e6bcf647c4a15b062
+    - MONGO_USER=travis
+    - MONGO_PASS=test
 services:
   - mongo mydb_test --eval 'db.addUser("travis", "test");'
   - sleep 15
@@ -16,3 +21,11 @@ addons:
     - mongodb-3.0-precise
     packages:
     - mongodb-org-server
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - npm test
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
