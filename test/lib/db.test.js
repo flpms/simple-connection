@@ -63,7 +63,7 @@ describe('Unit test for DB', () => {
     });
 
     it('expect db url has user only', () => {
-      let configClone = { ...config };
+      let configClone = Object.assign({}, config);
       delete configClone.password;
 
       db = new DB(configClone);
@@ -73,7 +73,7 @@ describe('Unit test for DB', () => {
 
     it('expect db url has no user and password', () => {
 
-      let configClone = { ...config };
+      let configClone = Object.assign({}, config);
       delete configClone.username;
       delete configClone.password;
 
