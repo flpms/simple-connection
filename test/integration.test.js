@@ -11,8 +11,8 @@ describe('Test integration with mongo db', () => {
   let db, collection;
 
   const CONFIG = {
-    "username": "root",
-    "password": "",
+    "username": process.env.MONGO_USER,
+    "password": process.env.MONGO_PASS,
     "server": "127.0.0.1",
     "port": 27017,
     "database_name": "exampleTest"
@@ -25,44 +25,73 @@ describe('Test integration with mongo db', () => {
 
   context('insert data', () => {
     it('expect create data', (done) => {
-      collection.insert({filipe: 'silva'}).then((ops) => {
+      collection.insert({ name: 'filipe silva' })
+                .then((ops) => {
 
+                  expect(ops.result).to.be.a('object');
+                  expect(ops.result).to.have.property('ok');
+                  expect(ops.result.ok).to.be.equal(1);
+
+                  done();
+                });
+    });
+
+    it('expect multiple data', (done) => {
+      collection.insert([
+        { name: 'filipe silva' },
+        { name: 'filipe silva' },
+        { name: 'filipe silva' },
+        { name: 'filipe silva' }
+      ])
+      .then((ops) => {
         expect(ops.result).to.be.a('object');
         expect(ops.result).to.have.property('ok');
+        expect(ops.result).to.have.property('n');
         expect(ops.result.ok).to.be.equal(1);
-
+        expect(ops.result.n).to.be.equal(4);
         done();
       });
     });
   });
 
   context('read data', () => {
-    it('expect retrive data', (done) => {
-      collection.find({ filipe: 'silva' }).then((ops) => {
-        expect(ops).to.be.a('array');
-        done();
-      });
+
+    it('expect retrive one record', (done) => {
+      collection.find({ name: 'filipe silva' })
+                .then((ops) => {
+                  expect(ops).to.be.a('array');
+                  expect(ops[0]).to.be.a('object');
+                  expect(ops[0]).to.have.a.property('_id');
+                  expect(ops[0]).to.have.a.property('name');
+                  expect(ops[0].name).to.equal('filipe silva');
+                  done();
+                });
     });
   });
 
   context('update data', () => {
-    let item;
+    it('expect update data', (done) => {
+      collection.update({ name: 'filipe silva' }, { name: 'filipe melo' })
+                .then((ops) => {
+                  expect(ops).to.be.a('object');
+                  expect(ops).to.have.a.property('result');
+                  expect(ops.result).to.have.a.property('ok');
+                  expect(ops.result.ok).to.be.equal(1);
+                  done();
+                });
+    });
+  });
 
-    beforeEach(() => {
-      collection.find({ filipe: 'silva' }).then((ops) => {
-        item = ops[0];
-      });
-    })
-
-    it('expect retrive data', (done) => {
-      collection.update(item, { filipe: 'melo' }).then((ops) => {
-        console.log('= = = ', ops);
-        // expect(ops).to.be.a('array');
-        done();
-      }).catch((er) => {
-        console.log('!!! ', er);
-        done();
-      });
+  context('delete data', () => {
+    it('expect delete data', (done) => {
+      collection.remove({ filipe: 'melo' })
+                .then((ops) => {
+                  expect(ops).to.be.a('object');
+                  expect(ops).to.have.a.property('result');
+                  expect(ops.result).to.have.a.property('ok');
+                  expect(ops.result.ok).to.be.equal(1);
+                  done();
+                });
     });
   });
 
