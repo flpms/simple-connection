@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "mocha ./test/lib/**.test.js",
-    "integration-test": "mocha ./test/integration.test.js"
+    "test-coverage": "nyc --reporter=html mocha ./test/lib/**.test.js",
+    "test-integration": "mocha ./test/integration.test.js"
   },
   "repository": {
     "type": "git",
