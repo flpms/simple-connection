@@ -34,42 +34,31 @@ describe('Unit test for Connections', () => {
   });
 
   context('createConnection()', () => {
-    it('expect call mongoClient connect on call createConnection', () => {
+    beforeEach(() => {
+      let mockPromise = new Promise((r) => r);
+      stubMongoClientConn.returns(mockPromise);
       connections.createConnection();
-      expect(stubMongoClientConn.called).to.be.true;
     });
 
     it('expect connection has property _connection after call createConnection', () => {
-      connections.createConnection();
-
       expect(connections).to.have.property('_connection');
+    });
+
+    it('expect call mongoClient connect on call createConnection', () => {
+      expect(stubMongoClientConn.calledWith(url)).to.be.true;
+    });
+
+    it('expect connection property has a object after call createConnection', () => {
       expect(typeof connections._connection).to.be.equal('object');
-    });
-
-    it('expect connection resolve with sucess', (done) => {
-      stubMongoClientConn.callsFake((arg1, cb) => cb(null, true));
-
-      connections.createConnection();
-
-      connections._connection.then((result) => {
-        expect(result).to.equal(true);
-        done();
-      });
-    });
-
-    it('expect connection resolve with failure', (done) => {
-      stubMongoClientConn.callsFake((arg1, cb) => cb(true ));
-
-      connections.createConnection();
-
-      connections._connection.catch((result) => {
-        expect(result).to.equal(true);
-        done();
-      });
     });
   });
 
   context('get connection()', () => {
+    beforeEach(() => {
+      let mockPromise = new Promise((r) => r);
+      stubMongoClientConn.returns(mockPromise);
+    });
+
     it('expect get object connection as result', () => {
       connections.createConnection();
       const result = connections.connection;
