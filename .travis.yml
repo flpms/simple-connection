@@ -28,7 +28,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - npm test
-  - npm run test-integration
+  - npm run test:unit
+  - npm run test:unit-integration
 after_script:
   - ./cc-test-reporter after-build -t lcov --debug --exit-code $TRAVIS_TEST_RESULT

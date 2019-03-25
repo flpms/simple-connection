@@ -9,7 +9,7 @@
   "scripts": {
     "test:unit": "mocha ./test/lib/**.test.js",
     "test:integration": "mocha ./test/integration.test.js",
-    "test-coverage": "nyc --reporter=html mocha ./test/lib/**.test.js",
+    "test:unit-coverage": "nyc --reporter=html mocha ./test/lib/**.test.js",
     "test-integration": "mocha ./test/integration.test.js"
   },
   "repository": {
@@ -31,7 +31,7 @@
     "chai": "^3.5.0",
     "mocha": "^5.2.0",
     "nyc": "^13.3.0",
-    "sinon": "^5.0.7"
+    "sinon": "^7.3.0"
   },
   "dependencies": {
     "mongodb": "^2.2.35"
