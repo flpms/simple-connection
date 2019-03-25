@@ -17,15 +17,13 @@ describe('Test integration with mongo db', () => {
   };
 
   beforeEach(() => {
-    console.info('test using config', CONFIG);
-
     db = new DB(CONFIG);
     collection = db.open('exampleCollection');
   });
 
   context('insert data', () => {
     it('expect create data', (done) => {
-      collection.insert({ name: 'filipe silva' })
+      collection('insert', { name: 'filipe silva' })
                 .then((ops) => {
 
                   expect(ops.result).to.be.a('object');
@@ -37,7 +35,7 @@ describe('Test integration with mongo db', () => {
     });
 
     it('expect multiple data', (done) => {
-      collection.insert([
+      collection('insertMany', [
         { name: 'filipe silva' },
         { name: 'filipe silva' },
         { name: 'filipe silva' },
@@ -56,22 +54,36 @@ describe('Test integration with mongo db', () => {
 
   context('read data', () => {
 
-    it('expect retrive one record', (done) => {
-      collection.find({ name: 'filipe silva' })
-                .then((ops) => {
-                  expect(ops).to.be.a('array');
-                  expect(ops[0]).to.be.a('object');
-                  expect(ops[0]).to.have.a.property('_id');
-                  expect(ops[0]).to.have.a.property('name');
-                  expect(ops[0].name).to.equal('filipe silva');
-                  done();
-                });
+    it('expect find record', (done) => {
+      collection('find', { name: 'filipe silva' }, { limit: 0 })
+          .then((dbResources) => {
+            dbResources.find.toArray().then((ops) => {
+              dbResources.close();
+              expect(ops).to.be.a('array');
+              expect(ops[0]).to.be.a('object');
+              expect(ops[0]).to.have.a.property('_id');
+              expect(ops[0]).to.have.a.property('name');
+              expect(ops[0].name).to.equal('filipe silva');
+              done();
+            });
+          });
+    });
+
+    it('expect findOne record', (done) => {
+      collection('findOne', { name: 'filipe silva' }, { limit: 0 })
+          .then((ops) => {
+            expect(ops).to.be.a('object');
+            expect(ops).to.have.a.property('_id');
+            expect(ops).to.have.a.property('name');
+            expect(ops.name).to.equal('filipe silva');
+            done();
+          });
     });
   });
 
   context('update data', () => {
     it('expect update data', (done) => {
-      collection.update({ name: 'filipe silva' }, { name: 'filipe melo' })
+      collection('update', { name: 'filipe silva' }, { name: 'filipe melo' })
                 .then((ops) => {
                   expect(ops).to.be.a('object');
                   expect(ops).to.have.a.property('result');
@@ -84,7 +96,7 @@ describe('Test integration with mongo db', () => {
 
   context('delete data', () => {
     it('expect delete data', (done) => {
-      collection.remove({ filipe: 'melo' })
+      collection('remove', { name: 'filipe silva' })
                 .then((ops) => {
                   expect(ops).to.be.a('object');
                   expect(ops).to.have.a.property('result');
