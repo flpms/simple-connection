@@ -4,9 +4,11 @@ const assert = require('assert');
 const expect = require('chai').expect;
 const sinon = require('sinon');
 
+const MongoClient = require('mongodb').MongoClient;
+
 const DB = require('../../lib/db.js');
 
-const Connections = require('../../lib/connections');
+const Operations = require('../../lib/operations');
 const Collections = require('../../lib/collections');
 
 describe('Unit test for DB', () => {
@@ -22,11 +24,11 @@ describe('Unit test for DB', () => {
   const sandbox = sinon.createSandbox();
 
   let db,
-      stubCreateConnection,
+      stubMongoClientConn,
       spyCollectionsConstructor;
 
   beforeEach(() => {
-    stubCreateConnection = sandbox.stub(Connections.prototype, 'createConnection');
+    stubMongoClientConn = sandbox.stub(MongoClient, 'connect');
     spyCollectionsConstructor = sandbox.spy(Collections.constructor);
   });
 
@@ -95,8 +97,8 @@ describe('Unit test for DB', () => {
       expect(db.open).to.be.a('function');
     });
 
-    it('expect createConnection be called after open call', () => {
-      expect(stubCreateConnection.called).to.be.true;
+    it('expect call mongoClient connect on call createConnection', () => {
+      expect(stubMongoClientConn.calledWith(db.url)).to.be.true;
     });
 
     it('expect result on call open are a object with operations properties', () => {
