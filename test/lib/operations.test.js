@@ -33,9 +33,10 @@ describe('Unit test for operations', () => {
     });
   });
 
-  context.only('operation call', () => {
+  context('operation call', () => {
     let connection,
-        deleteStub;
+        deleteStub,
+        findStub;
 
     before(() => {
       deleteStub = { delete: sandbox.stub() };
@@ -51,14 +52,40 @@ describe('Unit test for operations', () => {
     });
 
     it('expect call collection from db after call operations', () => {
+      deleteStub.delete.resolves({});
+
       operations('delete', { your: 'search'});
       expect(db.collection.called).to.be.true;
     });
 
-    it('expect find stub be called', () => {
+    it('expect delete stub be called', () => {
+      deleteStub.delete.resolves({});
+
       operations('delete', { your: 'search'});
-      expect(deleteStub.called).to.be.true;
+      expect(deleteStub.delete.called).to.be.true;
     });
 
+    it('expect close function be called after delete resolves and return same result', async () => {
+      const resolves = 'result';
+      deleteStub.delete.resolves(resolves);
+
+      const result = await operations('delete', { your: 'search'});
+      expect(db.close.called).to.be.true;
+      expect(result).to.be.equal(resolves);
+    });
+
+    it('expect find stub be called', async () => {
+      findStub =  { find: sandbox.stub().resolves('find') };
+      db.collection.returns(findStub);
+      connection = sandbox.stub().resolves(db);
+      let operation = new Operations(collectionName, connection());
+
+      let operationObject = await operation('find', { your: 'search'});
+
+      expect(operationObject).to.have.property('find');
+      expect(operationObject).to.have.property('close');
+
+      expect(operationObject.close).to.be.a('function');
+    });
   });
 });
