@@ -9,7 +9,7 @@
   "scripts": {
     "test:unit": "mocha ./test/lib/**.test.js",
     "test:integration": "mocha ./test/integration.test.js",
-    "test:unit-coverage": "nyc --reporter=html mocha ./test/lib/**.test.js",
+    "test:unit-coverage": "nyc --reporter=lcov mocha ./test/lib/**.test.js",
     "test-integration": "mocha ./test/integration.test.js"
   },
   "repository": {
