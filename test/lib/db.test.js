@@ -9,7 +9,6 @@ const MongoClient = require('mongodb').MongoClient;
 const DB = require('../../lib/db.js');
 
 const Operations = require('../../lib/operations');
-const Collections = require('../../lib/collections');
 
 describe('Unit test for DB', () => {
 
@@ -25,11 +24,11 @@ describe('Unit test for DB', () => {
 
   let db,
       stubMongoClientConn,
-      spyCollectionsConstructor;
+      stubOperationsConstructor;
 
   beforeEach(() => {
     stubMongoClientConn = sandbox.stub(MongoClient, 'connect');
-    spyCollectionsConstructor = sandbox.spy(Collections.constructor);
+    stubOperationsConstructor = sandbox.stub(Operations.prototype, 'constructor');
   });
 
   afterEach(() => sandbox.restore());
@@ -86,22 +85,34 @@ describe('Unit test for DB', () => {
   });
 
   context('open()', () => {
-    let result;
 
     beforeEach(() => {
+      stubOperationsConstructor.callsFake((arg1, arg2) => ({
+        find: () => {},
+        remove: () => {},
+        insert: () => {},
+        update: () => {}
+      }));
+
       db = new DB(config);
-      result = db.open('example');
     });
 
     it('expect open be a function', () => {
       expect(db.open).to.be.a('function');
     });
 
+    it('expect operations be called', () => {
+      db.open('example', stubOperationsConstructor);
+      expect(stubOperationsConstructor.called).to.be.true;
+    });
+
     it('expect call mongoClient connect on call createConnection', () => {
+      db.open('example', stubOperationsConstructor);
       expect(stubMongoClientConn.calledWith(db.url)).to.be.true;
     });
 
     it('expect result on call open are a object with operations properties', () => {
+      const result = db.open('example', stubOperationsConstructor);
       expect(result).to.be.a('object');
 
       expect(result).to.have.property('find');
