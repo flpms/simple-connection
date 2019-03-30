@@ -6,10 +6,17 @@ A small implementation to use mongodb with native drives provided by mongodb, bu
 
 `npm install simple-connection --save`
 
-
 ## About config object
 
-Configurantion object the you can build connection url the keys username and password are optional. Also you can send a `query_params` key to build connection url with more mongo parameters. In example you can found how to send configuration object and how to create instantion to use with simple-connection.
+Configuration object you can build url connection and the keys username and password are optional. Also you can send a `query_params` key to build url connection with more mongo parameters.
+
+In example you can found how to send configuration object and how to create a instance to use with simple-connection.
+
+## 3.x version
+
+To improve performance this version left promises and use more operations and promises from [mongodb package](https://www.npmjs.com/package/mongodb). This change make things a little different. Specially at `find` operation, **pay attention when use that** and not forget close database after operations.
+
+Another improve is all operations that [mongodb package](https://www.npmjs.com/package/mongodb) has, simple-connection support.
 
 ## Example
 
@@ -29,36 +36,42 @@ Configurantion object the you can build connection url the keys username and pas
   const collection = db.open('yourCollection');
 
   // to insert many pass an array with objects
-  collection.insert({ data: 'to insert' }).then((success) => {
-    console.log(success);
-  }).catch((err) => {
-    console.log(err);
-  });
+  collection('insert', { data: 'to insert' })
+    .then((success) => {
+      console.log(success);
+    }).catch((err) => {
+      console.log(err);
+    });
 
   // Or if your prefer async/await
   try {
-    const result = await collection.insert({ data: 'to insert' });
+    const result = await collection('insert', ({ data: 'to insert' });
     console.log(result);
   } catch(error)
     console.log(err);
   };
 
-  collection.find({ data: 'to search' }).then((success) => {
-    console.log(success);
-  }).catch((err) => {
-    console.log(err);
-  });
+  collection('find', { data: 'to search' })
+    .then((dbResources) => {
+      dbResources.find.toArray().then((result) => {
+        console.log(result);
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
 
-  collection.update({ data: 'to search' }, { data: 'to update' }).then((success) => {
-    console.log(success);
-  }).catch((err) => {
-    console.log(err);
-  });
+  collection('update', { data: 'to search' }, { data: 'to update' })
+    .then((success) => {
+      console.log(success);
+    }).catch((err) => {
+      console.log(err);
+    });
 
-  collection.remove({ data: 'to remove' }, options).then((success) => {
-    console.log(success);
-  }).catch((err) => {
-    console.log(err);
-  });
+  collection('remove', { data: 'to remove' }, options)
+    .then((success) => {
+      console.log(success);
+    }).catch((err) => {
+      console.log(err);
+    });
 
 ````
