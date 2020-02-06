@@ -16,8 +16,8 @@ jobs:
         mongodb-version: [4.0, 4.2]
     steps:
       - uses: actions/checkout@v1
-      - name: Start MongoDB
-        uses: superchargejs/mongodb-github-action@v1
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@1.1.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
       - uses: actions/setup-node@v1
