@@ -1,8 +1,6 @@
 'use strict';
 
-const assert = require('assert');
 const expect = require('chai').expect;
-const sinon = require('sinon');
 
 const DB = require('./../lib/db.js');
 
@@ -56,17 +54,15 @@ describe('Test integration with mongo db', () => {
 
     it('expect find record', (done) => {
       collection('find', { name: 'filipe silva' }, { limit: 0 })
-          .then((dbResources) => {
-            dbResources.find.toArray().then((ops) => {
-              dbResources.close();
-              expect(ops).to.be.a('array');
-              expect(ops[0]).to.be.a('object');
-              expect(ops[0]).to.have.a.property('_id');
-              expect(ops[0]).to.have.a.property('name');
-              expect(ops[0].name).to.equal('filipe silva');
-              done();
-            });
-          });
+        .then(ops => ops.toArray())
+        .then(ops => {
+          expect(ops).to.be.a('array');
+          expect(ops[0]).to.be.a('object');
+          expect(ops[0]).to.have.a.property('_id');
+          expect(ops[0]).to.have.a.property('name');
+          expect(ops[0].name).to.equal('filipe silva');
+          done();
+        });
     });
 
     it('expect findOne record', (done) => {
@@ -106,5 +102,20 @@ describe('Test integration with mongo db', () => {
                 });
     });
   });
+  
+  context('validate operations in another collection', () => {
+    it('expect create data in other collection', (done) => {
+      const col = db.collection('new_collection');
 
+      col('insert', { name: 'verify' })
+        .then((ops) => {
+  
+          expect(ops.result).to.be.a('object');
+          expect(ops.result).to.have.property('ok');
+          expect(ops.result.ok).to.be.equal(1);
+  
+          done();
+        });
+    });
+  });
 });
