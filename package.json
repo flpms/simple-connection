@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "npm run test:unit-coverage && npm run test:integration",
-    "test:unit": "mocha ./test/lib/**.test.js",
-    "test:integration": "mocha ./test/integration.test.js",
+    "test:unit": "mocha ./test/lib/**.test.js --exit",
+    "test:integration": "mocha ./test/integration.test.js --exit",
     "test:unit-coverage": "nyc --reporter=lcov mocha ./test/lib/**.test.js"
   },
   "repository": {
