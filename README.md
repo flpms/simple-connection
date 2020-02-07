@@ -1,4 +1,4 @@
-# Simple Connection - [![build status](https://secure.travis-ci.org/flpms/simple-connection.png)](http://travis-ci.org/flpms/simple-connection) [![Code Climate](https://codeclimate.com/github/flpms/simple-connection/badges/gpa.svg)](https://codeclimate.com/github/flpms/simple-connection)
+# Simple Connection - ![Node.js Package](https://github.com/flpms/simple-connection/workflows/Node.js%20Package/badge.svg?branch=develop)[![build status](https://secure.travis-ci.org/flpms/simple-connection.png)](http://travis-ci.org/flpms/simple-connection) [![Code Climate](https://codeclimate.com/github/flpms/simple-connection/badges/gpa.svg)](https://codeclimate.com/github/flpms/simple-connection)
 
 A small implementation to use mongodb with native drives provided by mongodb, but with promises.
 
