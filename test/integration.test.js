@@ -117,5 +117,33 @@ describe('Test integration with mongo db', () => {
           done();
         });
     });
+    
+    it('expect create data in two collections', (done) => {
+      const col = db.collection('new_collection');
+
+      col('insert', { name: 'verify' })
+        .then((ops) => {
+  
+          expect(ops.result).to.be.a('object');
+          expect(ops.result).to.have.property('ok');
+          expect(ops.result.ok).to.be.equal(1);
+  
+          done();
+        });
+
+      const col2 = db.collection('new_collection2');
+
+      col2('insert', { name: 'verify' })
+        .then((ops) => {
+
+          expect(ops.result).to.be.a('object');
+          expect(ops.result).to.have.property('ok');
+          expect(ops.result.ok).to.be.equal(1);
+
+          done();
+        });
+    });
+
+
   });
 });
