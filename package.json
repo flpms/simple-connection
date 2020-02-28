@@ -1,16 +1,16 @@
 {
   "name": "simple-connection",
-  "version": "3.0.0",
+  "version": "3.1.0-rc2",
   "description": "Connection using mongo native which desire to be an simple alternative to another communicattions - ES6 ready",
   "main": "lib/db.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test:unit": "mocha ./test/lib/**.test.js",
-    "test:integration": "mocha ./test/integration.test.js",
-    "test:unit-coverage": "nyc --reporter=lcov mocha ./test/lib/**.test.js",
-    "test-integration": "mocha ./test/integration.test.js"
+    "test": "npm run test:coverage && npm run test:integration",
+    "test:unit": "mocha ./test/lib/**.test.js --exit",
+    "test:integration": "mocha ./test/integration.test.js --exit",
+    "test:coverage": "npx nyc@latest --reporter=lcov --reporter=text-summary npm run test:unit"
   },
   "repository": {
     "type": "git",
@@ -33,10 +33,10 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^5.2.0",
-    "nyc": "^13.3.0",
-    "sinon": "^7.3.0"
+    "nyc": "^15.0.0",
+    "sinon": "^7.5.0"
   },
   "dependencies": {
-    "mongodb": "^2.2.35"
+    "mongodb": "^3.5.2"
   }
 }

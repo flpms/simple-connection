@@ -6,13 +6,20 @@ on:
       - master
   push:
     branches:
-      - master
-
+      - develop
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x, 13.x]
+        mongodb-version: [4.0, 4.2]
     steps:
       - uses: actions/checkout@v1
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@1.1.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
       - uses: actions/setup-node@v1
         with:
           node-version: 12
