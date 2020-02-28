@@ -1,10 +1,7 @@
 'use strict';
 
-const assert = require('assert');
 const expect = require('chai').expect;
 const sinon = require('sinon');
-
-const MongoClient = require('mongodb').MongoClient;
 
 const DB = require('../../lib/db.js');
 
@@ -23,11 +20,13 @@ describe('Unit test for DB', () => {
   const sandbox = sinon.createSandbox();
 
   let db,
-      stubMongoClientConn,
-      stubOperationsConstructor;
+    stubConnect,
+    stubMongoClient,
+    stubOperationsConstructor;
 
   beforeEach(() => {
-    stubMongoClientConn = sandbox.stub(MongoClient, 'connect');
+    stubConnect = sandbox.stub();
+    stubMongoClient = { connect: stubConnect };
     stubOperationsConstructor = sandbox.stub(Operations.prototype, 'constructor');
   });
 
@@ -51,7 +50,7 @@ describe('Unit test for DB', () => {
       } catch(e) {}
     });
 
-    it('expect db instantion has property url and config', () => {
+    it('expect db instance has property url and config', () => {
       db = new DB(config);
       expect(db).to.have.property('url')
       expect(db).to.have.property('config');
@@ -59,7 +58,7 @@ describe('Unit test for DB', () => {
       expect(db.url).to.be.a('string');
       expect(db.config).to.be.a('object');
 
-      expect(db.url).to.be.equal('mongodb://travis:tests@localhost:27017/exampleTest');
+      expect(db.url).to.be.equal('mongodb://travis%3Atests%40localhost:27017/exampleTest');
       expect(db.config).to.be.equal(config);
     });
 
@@ -69,7 +68,7 @@ describe('Unit test for DB', () => {
 
       db = new DB(configClone);
 
-      expect(db.url).to.be.equal('mongodb://travis@localhost:27017/exampleTest');
+      expect(db.url).to.be.equal('mongodb://travis%40localhost:27017/exampleTest');
     });
 
     it('expect db url has no user and password', () => {
@@ -87,43 +86,43 @@ describe('Unit test for DB', () => {
   context('open()', () => {
 
     beforeEach(() => {
-      stubOperationsConstructor.callsFake((arg1, arg2) => ({
+      stubOperationsConstructor.returns({
         find: () => {},
         remove: () => {},
         insert: () => {},
         update: () => {}
-      }));
+      });
 
-      db = new DB(config);
+      const instubConnect = sandbox.stub();
+      const instubMongoClient = { connect: instubConnect };
+
+      db = new DB(config, instubMongoClient);
     });
 
     it('expect open be a function', () => {
       expect(db.open).to.be.a('function');
     });
+  });
+ 
+  context('get connection', () => {
+    let db;
+    beforeEach(() => {
+      db = sandbox.spy;
+      stubConnect.resolves({
+        db,
+      });
 
-    it('expect operations be called', () => {
-      db.open('example', stubOperationsConstructor);
-      expect(stubOperationsConstructor.called).to.be.true;
+      db = new DB(config, stubMongoClient);
     });
 
-    it('expect call mongoClient connect on call createConnection', () => {
-      db.open('example', stubOperationsConstructor);
-      expect(stubMongoClientConn.calledWith(db.url)).to.be.true;
+    it('expect connect spy be called', () => {
+      db.connection;
+      expect(stubConnect.called).to.be.true;
     });
 
-    it('expect result on call open are a object with operations properties', () => {
-      const result = db.open('example', stubOperationsConstructor);
-      expect(result).to.be.a('object');
-
-      expect(result).to.have.property('find');
-      expect(result).to.have.property('remove');
-      expect(result).to.have.property('insert');
-      expect(result).to.have.property('update');
-
-      expect(result.find).to.be.a('function');
-      expect(result.remove).to.be.a('function');
-      expect(result.insert).to.be.a('function');
-      expect(result.update).to.be.a('function');
+    it('expect db spy be called', () => {
+      db.connection;
+      expect(stubConnect.called).to.be.true;
     });
   });
 

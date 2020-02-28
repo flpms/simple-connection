@@ -18,6 +18,10 @@ To improve performance this version left promises and use more operations and pr
 
 Another improve is all operations that [mongodb package](https://www.npmjs.com/package/mongodb) has, simple-connection support.
 
+### 3.1 version
+
+We made some changes more detail can be found [here](https://flpms.me/simple-connection-3-1/).
+
 ## Example
 
 ```` javascript
