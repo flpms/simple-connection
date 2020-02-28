@@ -228,3 +228,5 @@ test-index.js
 .nyc_output/
 
 coverage/
+
+.vscode/
