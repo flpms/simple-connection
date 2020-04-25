@@ -33,10 +33,10 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^5.2.0",
-    "nyc": "^15.0.0",
+    "nyc": "^15.0.1",
     "sinon": "^7.5.0"
   },
   "dependencies": {
-    "mongodb": "^3.5.2"
+    "mongodb": "^3.5.6"
   }
 }
