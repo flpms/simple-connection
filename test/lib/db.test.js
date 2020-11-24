@@ -58,7 +58,7 @@ describe('Unit test for DB', () => {
       expect(db.url).to.be.a('string');
       expect(db.config).to.be.a('object');
 
-      expect(db.url).to.be.equal('mongodb://travis%3Atests%40localhost:27017/exampleTest');
+      expect(db.url).to.be.equal('mongodb://travis:tests@localhost:27017/exampleTest');
       expect(db.config).to.be.equal(config);
     });
 
@@ -68,7 +68,7 @@ describe('Unit test for DB', () => {
 
       db = new DB(configClone);
 
-      expect(db.url).to.be.equal('mongodb://travis%40localhost:27017/exampleTest');
+      expect(db.url).to.be.equal('mongodb://travis@localhost:27017/exampleTest');
     });
 
     it('expect db url has no user and password', () => {
