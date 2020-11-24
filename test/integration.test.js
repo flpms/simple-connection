@@ -16,6 +16,7 @@ describe('Test integration with mongo db', () => {
 
   beforeEach(() => {
     db = new DB(CONFIG);
+
     collection = db.open('exampleCollection');
   });
 
@@ -29,7 +30,7 @@ describe('Test integration with mongo db', () => {
                   expect(ops.result.ok).to.be.equal(1);
 
                   done();
-                });
+                }).catch(done);
     });
 
     it('expect multiple data', (done) => {
@@ -46,7 +47,7 @@ describe('Test integration with mongo db', () => {
         expect(ops.result.ok).to.be.equal(1);
         expect(ops.result.n).to.be.equal(4);
         done();
-      });
+      }).catch(done);
     });
   });
 
@@ -73,20 +74,24 @@ describe('Test integration with mongo db', () => {
             expect(ops).to.have.a.property('name');
             expect(ops.name).to.equal('filipe silva');
             done();
-          });
+          }).catch(done);
     });
   });
 
   context('update data', () => {
     it('expect update data', (done) => {
-      collection('update', { name: 'filipe silva' }, { name: 'filipe melo' })
+      collection('updateOne',
+        { name: 'filipe silva' },
+        {
+          $set: { name: 'filipe melo' }
+        })
                 .then((ops) => {
                   expect(ops).to.be.a('object');
                   expect(ops).to.have.a.property('result');
                   expect(ops.result).to.have.a.property('ok');
                   expect(ops.result.ok).to.be.equal(1);
                   done();
-                });
+                }).catch(done);
     });
   });
 
@@ -115,35 +120,28 @@ describe('Test integration with mongo db', () => {
           expect(ops.result.ok).to.be.equal(1);
   
           done();
-        });
+        }).catch(done);
     });
     
-    it('expect create data in two collections', (done) => {
-      const col = db.collection('new_collection');
-
-      col('insert', { name: 'verify' })
-        .then((ops) => {
-  
-          expect(ops.result).to.be.a('object');
-          expect(ops.result).to.have.property('ok');
-          expect(ops.result.ok).to.be.equal(1);
-  
-          done();
-        });
-
+    it('expect create data in two collections', async () => {
+      const col = db.collection('new_collection2');
       const col2 = db.collection('new_collection2');
+      col('remove', {});
+      col2('remove', {});
+      try {
+        const ops = await col('insert', { name: 'verify' })
+        expect(ops.result).to.be.a('object');
+        expect(ops.result).to.have.property('ok');
+        expect(ops.result.ok).to.be.equal(1);
+  
+        const ops2 = await col2('insert', { name: 'verify' })
+        expect(ops2.result).to.be.a('object');
+        expect(ops2.result).to.have.property('ok');
+        expect(ops2.result.ok).to.be.equal(1);
 
-      col2('insert', { name: 'verify' })
-        .then((ops) => {
-
-          expect(ops.result).to.be.a('object');
-          expect(ops.result).to.have.property('ok');
-          expect(ops.result.ok).to.be.equal(1);
-
-          done();
-        });
+      } catch(err) {
+        throw err;
+      }
     });
-
-
   });
 });
