@@ -1,6 +1,6 @@
 {
   "name": "simple-connection",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "description": "Connection using mongo native which desire to be an simple alternative to another communicattions - ES6 ready",
   "main": "lib/db.js",
   "directories": {
