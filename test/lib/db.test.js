@@ -81,6 +81,20 @@ describe('Unit test for DB', () => {
 
       expect(db.url).to.be.equal('mongodb://localhost:27017/exampleTest');
     });
+
+    it('expect url has different protocol and no port ', () => {
+      const {port, ...rest } = config;
+      rest.protocol = 'mongodb+srv://';
+      db = new DB(rest);
+      expect(db).to.have.property('url')
+      expect(db).to.have.property('config');
+
+      expect(db.url).to.be.a('string');
+      expect(db.config).to.be.a('object');
+
+      expect(db.url).to.be.equal('mongodb+srv://travis:tests@localhost/exampleTest');
+      expect(db.config).to.be.equal(rest);
+    });
   });
 
   context('open()', () => {
@@ -145,11 +159,6 @@ describe('Unit test for DB', () => {
 
     it('expect validConfig be false when don\'t have a property server in config', () => {
       delete db.config.server;
-      expect(db.validConfig).to.be.undefined;
-    });
-
-    it('expect validConfig be false when don\'t have a property port in config', () => {
-      delete db.config.port;
       expect(db.validConfig).to.be.undefined;
     });
 

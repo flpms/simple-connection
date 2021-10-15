@@ -17,7 +17,7 @@
     "url": "git+https://github.com/flpms/simple-connection.git"
   },
   "engines": {
-    "node": ">=8.0"
+    "node": ">=10.0"
   },
   "keywords": [
     "mongo",
