@@ -29,6 +29,7 @@ We made some changes more detail can be found [here](https://flpms.me/simple-con
   const DB = require('simple-connection');
 
   const CONFIG = {
+    "protocol": "mongo+srv://", // it's optional, the default will be mongodb://
     "username": process.env.MONGO_USER,
     "password": process.env.MONGO_PASS,
     "server": "127.0.0.1",
@@ -79,3 +80,8 @@ We made some changes more detail can be found [here](https://flpms.me/simple-con
     });
 
 ````
+
+### v4
+
+I've some plans to create a v4 with intents to have types.d.ts and some improvements in perfomance
+
