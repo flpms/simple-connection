@@ -230,3 +230,4 @@ test-index.js
 coverage/
 
 .vscode/
+.env
