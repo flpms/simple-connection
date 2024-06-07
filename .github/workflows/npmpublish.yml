@@ -1,9 +1,9 @@
-name: Node.js Package
+name: Simple-Connection Package
 
 on:
   pull_request:
     branches:
-      - master
+      - main
   push:
     branches:
       - develop
@@ -12,8 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x, 13.x, 14.x, 15.x, 16.x]
-        mongodb-version: [4.0, 4.2]
+        node-version: [16.x, 18.x, 20.x, 22.x]
+        mongodb-version: [4.2, 4.4, 6.0, 7.0, 8.0]
+
     steps:
       - uses: actions/checkout@v1
       - name: MongoDB in GitHub Actions
