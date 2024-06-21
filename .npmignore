@@ -1,0 +1,10 @@
+# Exclude folders
+/docs
+/src
+/docker-entrypoint-initdb.d
+/.git
+/.github
+
+.dockerignore
+codeclimate-config-patch
+

@@ -1,0 +1,22 @@
+services:
+  mongodb7:
+    image: mongo:7.0.9-jammy
+    ports:
+      - 27017:27017
+    command:
+      - --storageEngine
+      - wiredTiger
+      - --auth
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+    volumes:
+      - ./docker-entrypoint-initdb.d/createUser.js:/docker-entrypoint-initdb.d/createUser.js:ro
+    env_file: .env
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '1GB'

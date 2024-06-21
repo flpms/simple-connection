@@ -1,0 +1,25 @@
+name: Running Tests
+
+on:
+  workflow_call
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@main
+      - name: Build
+        run: docker build . -t simple-connection
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker-compose up -d
+      - uses: actions/checkout@v3
+      - name: npm CI
+        run: npm ci
+      - name: Running Unit Test
+        run: npm test
