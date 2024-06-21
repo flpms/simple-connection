@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-import {ClientConnection} from "./client-connection.ts";
+import {ClientConnection} from "./client-connection.js";
 
 export class SimpleConnection extends ClientConnection {
   private connectionString: string;
