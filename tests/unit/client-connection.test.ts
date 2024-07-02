@@ -3,7 +3,7 @@ import { before, describe, it } from "node:test";
 import sinon from "sinon";
 import { expect } from "chai";
 
-import { ClientConnection } from "../../lib/client-connection.ts";
+import { ClientConnection } from "../../src/client-connection.ts";
 
 const sbox = sinon.createSandbox();
 
