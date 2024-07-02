@@ -1,9 +1,8 @@
-import { before, describe, it, after } from "node:test";
+import { describe, it } from "node:test";
 
-import sinon from "sinon";
 import { expect } from "chai";
 
-import { SimpleConnection } from "../../lib/index.ts";
+import { SimpleConnection } from "../../src/index.ts";
 
 describe("Unit Test for SimpleConnection index", () => {
 
