@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "es2020",
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "declaration": true,
     "outDir": "./lib",
@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "types": ["node"],
-    "lib": ["es2018"]
+    "lib": ["ESNext"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
