@@ -1,8 +1,13 @@
 {
   "name": "simple-connection",
   "version": "3.2.2",
-  "description": "Connection using mongo native which desire to be an simple alternative to another communicattions - ES6 ready",
-  "main": "lib/db.js",
+  "description": "Simple connection wrapper to MongoDB using ES6 modules and ESM",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "directories": {
     "test": "tests"
   },
@@ -44,7 +49,7 @@
     "sinon": "^9.2.0",
     "tsup": "^8.1.0",
     "tsx": "^4.11.0",
-    "typescript": "^5.5.2"
+    "typescript": "^4.5.2"
   },
   "dependencies": {
     "mongodb": "^6.6.2"
