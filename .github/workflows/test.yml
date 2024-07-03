@@ -40,6 +40,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: npm CI
+        run: npm ci
       - name: Prepare serve env
         run: |
           echo MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME >> .env
@@ -50,8 +52,6 @@ jobs:
           MONGO_INITDB_ROOT_PASSWORD: ${{secrets.MONGO_INITDB_ROOT_PASSWORD}}
           MONGO_INITDB_DATABASE: ${{vars.MONGO_INITDB_DATABASE}}
       - run: docker-compose up -d
-      - name: npm CI
-        run: npm ci
       - name: Running Integration Test
         run: npm run test:integration
 
