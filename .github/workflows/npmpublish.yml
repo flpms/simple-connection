@@ -1,38 +1,39 @@
-name: Simple-Connection Package
+# name: Simple-Connection Package
 
-on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - develop
-jobs:
-  test:
-    uses: ./.github/workflows/test.yml
-  build:
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x, 20.x, 22.x]
-        mongodb-version: [4.2, 4.4, 6.0, 7.0, 8.0]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#   push:
+#     branches:
+#       - develop
+# jobs:
+#   test:
+#     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+#     uses: ./.github/workflows/test.yml
+#   build:
+#     runs-on: ubuntu-latest
+#     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+#     strategy:
+#       matrix:
+#         node-version: [16.x, 18.x, 20.x, 22.x]
+#         mongodb-version: [4.2, 4.4, 6.0, 7.0, 8.0]
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Build
-        run: npm run build
+#       - name: Build
+#         run: npm run build
 
-      - name: Publish to npm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+#       - name: Publish to npm
+#         run: npm publish
+#         env:
+#           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
