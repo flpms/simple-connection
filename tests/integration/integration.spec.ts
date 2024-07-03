@@ -4,7 +4,7 @@ import { before, describe, it, after } from 'node:test';
 
 import {expect} from 'chai';
 
-import { SimpleConnection } from "../../lib/index.ts";
+import { SimpleConnection } from "../../src/index.ts";
 
 describe('Test integration with mongo db', () => {
   let db: SimpleConnection, collection: any;
