@@ -37,6 +37,15 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
+      - name: Prepare serve env
+        run: |
+          echo MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME >> .env
+          echo MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD >> .env
+          echo MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE >> .env
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{vars.MONGO_INITDB_ROOT_USERNAME}}
+          MONGO_INITDB_ROOT_PASSWORD: ${{secrets.MONGO_INITDB_ROOT_PASSWORD}}
+          MONGO_INITDB_DATABASE: ${{vars.MONGO_INITDB_DATABASE}}
       - run: docker-compose up -d
       - name: npm CI
         run: npm ci
