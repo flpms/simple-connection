@@ -53,5 +53,5 @@ jobs:
       - name: npm CI
         run: npm ci
       - name: Running Integration Test
-        run: npm run test:e2e
+        run: npm run test:integration
 
