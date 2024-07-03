@@ -1,4 +1,8 @@
 services:
+  run-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
   mongodb7:
     image: mongo:7.0.9-jammy
     ports:
