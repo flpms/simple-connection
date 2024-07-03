@@ -8,6 +8,15 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@main
+      - name: Prepare serve env
+        run: |
+          echo MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME >> ~/.env
+          echo MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD >> ~/.env
+          echo MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE >> ~/.env
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{vars.MONGO_INITDB_ROOT_USERNAME}}
+          MONGO_INITDB_ROOT_PASSWORD: ${{secrets.MONGO_INITDB_ROOT_PASSWORD}}
+          MONGO_INITDB_DATABASE: ${{vars.MONGO_INITDB_DATABASE}}
       - name: Build
         run: docker build . -t simple-connection
       - run: docker-compose up -d
