@@ -6,6 +6,8 @@ import {expect} from 'chai';
 
 import { SimpleConnection } from "../../src/index.ts";
 
+const host = "mongodb7";
+
 describe('Test integration with mongo db', () => {
   let db: SimpleConnection, collection: any;
 
@@ -13,7 +15,7 @@ describe('Test integration with mongo db', () => {
 
   before(async() => {
     db = new SimpleConnection(
-      "mongodb://testRoot:testRootSecret@localhost:27017/TEST"
+      `mongodb://testRoot:testRootSecret@${host}:27017/TEST`
     );
     await db.open();
 

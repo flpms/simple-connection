@@ -15,8 +15,26 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d/createUser.js:/docker-entrypoint-initdb.d/createUser.js:ro
     env_file: .env
+    hostname: mongodb7
+    networks:
+      - alpine_net
     deploy:
       resources:
         limits:
           cpus: '0.5'
           memory: '1GB'
+
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb7
+    networks:
+      - alpine_net
+
+networks:
+  alpine_net:
+    driver: bridge

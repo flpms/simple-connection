@@ -8,4 +8,4 @@ RUN npm ci
 COPY src ./src
 COPY tests ./tests
 
-CMD ["npm", "run", "test:coverage"]
+CMD ["npm", "run", "test"]
