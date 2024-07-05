@@ -1,4 +1,4 @@
-# Simple Connection - ![Node.js Package](https://github.com/flpms/simple-connection/workflows/Node.js%20Package/badge.svg?branch=main)[![build status](https://secure.travis-ci.org/flpms/simple-connection.png)](http://travis-ci.org/flpms/simple-connection) [![Code Climate](https://codeclimate.com/github/flpms/simple-connection/badges/gpa.svg)](https://codeclimate.com/github/flpms/simple-connection)
+# Simple Connection - [![Pull Request](https://github.com/flpms/simple-connection/actions/workflows/pull-request.yml/badge.svg?branch=main)](https://github.com/flpms/simple-connection/actions/workflows/pull-request.yml) [![Code Climate](https://codeclimate.com/github/flpms/simple-connection/badges/gpa.svg)](https://codeclimate.com/github/flpms/simple-connection)
 
 ## Description
 
