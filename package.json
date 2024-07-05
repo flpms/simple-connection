@@ -1,6 +1,6 @@
 {
   "name": "simple-connection",
-  "version": "3.2.2",
+  "version": "4.0.0",
   "description": "Simple connection wrapper to MongoDB using ES6 modules and ESM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
