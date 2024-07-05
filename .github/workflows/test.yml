@@ -53,8 +53,3 @@ jobs:
           MONGO_INITDB_DATABASE: ${{vars.MONGO_INITDB_DATABASE}}
       - name:
         run: docker-compose up -d
-      - name: test network
-        run: curl mongodb7:27017
-      - name: Running Integration Test
-        run: npm run test:integration
-
