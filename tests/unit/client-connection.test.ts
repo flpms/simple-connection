@@ -29,18 +29,18 @@ describe("Unit Test for ClientConnection", () => {
   });
 
   it("expect connectOpen calls client connect", async () => {
-    await db.connectOpen("test");
+    await db.openConnect('test');
     expect(dbMethodsStub.connect.called).to.be.true;
   });
 
   it("expect connectOpen calls client db", async () => {
-    await db.connectOpen("test");
+    await db.openConnect('test');
     expect(dbMethodsStub.db.called).to.be.true;
   });
 
   it("expect collection calls dbInstance collection", async () => {
-    await db.connectOpen("test");
-    await db.collection("test");
+    const dbInstance = await db.openConnect('test');
+    dbInstance.collection('test');
     expect(collectionStub.collection.called).to.be.true;
   });
 });

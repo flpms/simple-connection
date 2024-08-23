@@ -18,8 +18,11 @@ export class SimpleConnection extends ClientConnection {
     this.dbName = dbName;
   }
 
-  async open() {
+  open() {
     this.client = new MongoClient(this.connectionString);
-    await super.connectOpen(this.dbName);
+    return new Promise((resolve, reject) => {
+      super.openConnect(this.dbName)
+        .then((db) => resolve(db));
+    });
   }
 }
