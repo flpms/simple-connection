@@ -18,6 +18,13 @@ services:
     hostname: mongodb7
     networks:
       - alpine_net
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh 127.0.0.1:27017/test --quiet
+      start_period: 30s
+      start_interval: 30s
+      interval: 5s
+      timeout: 30s
+      retries: 50
     deploy:
       resources:
         limits:
@@ -31,7 +38,8 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - mongodb7
+      mongodb7:
+        condition: service_healthy
     networks:
       - alpine_net
 
