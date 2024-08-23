@@ -16,13 +16,14 @@ export class ClientConnection {
     return (MConnClient: MongoClient) => MConnClient;
   }
 
-  async connectOpen(dbName: string) {
-    await this.client.connect();
-    this.dbInstance = await this.client.db(dbName);
-    return this.dbInstance;
+  async openConnect(dbName: string) {
+    return this.client.connect().then(() => {
+      this.dbInstance = this.client.db(dbName);
+      return this.dbInstance;
+    });
   }
 
-  async collection(collectionName: string) {
+  collection(collectionName: string) {
     return this.dbInstance.collection(collectionName);
   }
 }
